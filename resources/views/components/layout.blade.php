@@ -23,14 +23,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}" />
     <title>NnyWears</title>
   </head>
   <body>
     <!-- Nav Bar -->
-    <x-navbar>
-        @include('partials._search')
-    </x-navbar>
+    <x-navbar />
     
 
     <main>

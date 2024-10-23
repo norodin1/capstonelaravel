@@ -15,4 +15,8 @@ use App\Http\Controllers\ListingController;
 */
 
 //All Listings
-Route::get('/', [ListingController::class, 'index']);
+Route::get('/', [ListingController::class, 'index'])->name('home');
+// login
+Route::get('/login', [ListingController::class, 'login'])->name('login');
+// register
+Route::get('/register', [ListingController::class, 'register'])->name('register');
