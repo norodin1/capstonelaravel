@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Listing;
 use Illuminate\Http\Request;
 
 class ListingController extends Controller
@@ -11,34 +12,30 @@ class ListingController extends Controller
     {
         
         return view('listings.index', [
-            'listings' => [
-                [
-                    'id' => 1,
-                    'itemName' => 'White-Shirt',
-                    'itemPrice' => '$599',
-                    'category' => 'top',
-                ],
-                [
-                    'id' => 2,
-                    'itemName' => 'Blue-Shirt',
-                    'itemPrice' => '$699',
-                    'category' => 'top',
-                ],
-                [
-                    'id' => 3,
-                    'itemName' => 'White-Pants',
-                    'itemPrice' => '$599',
-                    'category' => 'bottom',
-                ],
-                [
-                    'id' => 1,
-                    'itemName' => 'Blue-Pants',
-                    'itemPrice' => '$799',
-                    'category' => 'Bottom',
-                ]
-            ]
+            'listings' => Listing::all()
         ]);
     }
+    
+    //Show single listing
+    public function showListing(Listing $listing)
+    {
+        return view('listings.showListing', [
+            'listing' => $listing
+        ]);
+    }
+
+     //Search
+     public function search()   
+     {
+         return view('listings.search', [   
+            'listing' => Listing::when(request('keyword'), function ($query) {
+                return $query->where('itemName', 'like', '%' . request('keyword') . '%');
+            })->when(request('category'), function ($query) {
+                return $query->where('category', request('category'));
+            })->get()
+         ]);
+     }
+     
 
     public function login ()
     {
@@ -49,4 +46,26 @@ class ListingController extends Controller
     {
         return view('auth.register');
     }
+
+    public function admin ()
+    {
+        return view('auth.admin');
+    }
+    public function adminHome ()
+    {
+        return view('listings.adminHome');
+    }
+
+    public function sellingList ()
+    {
+        return view('listings.createListing', [
+            'listings' => Listing::all()
+        ]);
+    }
+
+    public function userList ()
+    {
+        return view('listings.userList');
+    }
+
 }

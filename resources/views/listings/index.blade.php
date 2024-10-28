@@ -1,5 +1,5 @@
 <x-layout> 
-    @include('partials._category')
+    {{-- @include('partials._filter') --}}
     @include('partials._hero')
     <div
         class="container mx-auto mt-4 md:h-12 md:max-w-none md:w-full border-2 items-center flex justify-center rounded-sm bg-gray-600 text-gray-50"
@@ -16,7 +16,7 @@
                 <div
                 class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
                 >
-                <a class="grid justify-items-center" href="#">
+                <a class="grid justify-items-center" href="/listings/showListing/{{$listing['id']}}">
                     <img
                     class="p-8 rounded-t-lg md:h-80"
                     src="{{ asset('no-image.png') }}"
@@ -109,10 +109,10 @@
                     <!-- Item Price -->
                     <div class="flex items-center justify-between">
                     <span class="text-3xl font-bold text-gray-900 dark:text-white"
-                        >{{$listing['itemPrice']}}</span
+                        >${{$listing['itemPrice']}}</span
                     >
                     <a
-                        href="./login.html"
+                        href="{{ auth()->check() ? '' : route('login') }}"
                         class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >Add to cart</a
                     >
@@ -126,4 +126,5 @@
           @endunless
         </ul>
       </div>
+    
 </x-layout>

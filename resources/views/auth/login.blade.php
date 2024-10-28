@@ -20,12 +20,16 @@
             </div>
             <div>
               <div
-                class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800"
+              class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800"
               >
+              @foreach ($errors->all() as $error)
+              <div>{{ $error }}</div>
+              @endforeach
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                   Sign in to NnyWears
                 </h2>
-                <form class="mt-8 space-y-6" action="#">
+                <form action="{{ route('login.user') }}" method="POST" class="mt-8 space-y-6">
+                  @csrf
                   <div>
                     <label
                       for="email"
@@ -39,6 +43,7 @@
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="name@company.com"
                       required
+                      value="{{ old('email') }}"
                     />
                   </div>
                   <div>
