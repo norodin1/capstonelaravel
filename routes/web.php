@@ -40,14 +40,21 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [ListingController::class, 'register'])->name('register');
 
 // admin
-Route::get('/admin/login', [ListingController::class, 'admin'])->name('admin.login');
-
-// admin home
-Route::get('/admin/home', [ListingController::class, 'adminHome'])->name('admin.home');
-// selling list
-Route::get('/admin/list/selling', [ListingController::class, 'sellingList'])->name('admin.ListSelling');
-// user list
-Route::get('/admin/list/users', [ListingController::class, 'userList'])->name('admin.ListUsers');
+Route::group(['prefix'=>'admin'], function(){
+    Route::get('/', function () {
+        if (auth()->check()) {
+            return redirect()->route('admin.home');
+        }
+        return redirect()->route('admin.login');
+    });
+    Route::post('/login', [ListingController::class, 'admin'])->name('admin.login');
+    Route::get('/home', [ListingController::class, 'adminHome'])->name('admin.home');
+    Route::group(['prefix'=>'list'], function(){
+        Route::post('/selling', [ListingController::class, 'createListing'])->name('admin.create.listing');
+        Route::get('/selling', [ListingController::class, 'sellingList'])->name('admin.ListSelling');
+        Route::get('/users', [ListingController::class, 'userList'])->name('admin.ListUsers');
+    });
+});
 
 Route::post('/login/admin', [LoginController::class, 'authenticate'])->name('login.admin');
 Route::post('/create', [LoginController::class, 'create'])->name('create.user');
