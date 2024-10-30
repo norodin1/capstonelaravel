@@ -1,5 +1,4 @@
 <x-layout> 
-    {{-- @include('partials._filter') --}}
     @include('partials._hero')
     <div
         class="container mx-auto mt-4 md:h-12 md:max-w-none md:w-full border-2 items-center flex justify-center rounded-sm bg-gray-600 text-gray-50"
@@ -12,16 +11,26 @@
 
           @unless(count($listings)==0)
           @foreach ($listings as $listing)
-            <li class="justify-self-center">
+            <li class="justify-self-center md:w-full md:h-full">
                 <div
-                class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                class="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
                 >
                 <a class="grid justify-items-center" href="/listings/showListing/{{$listing['id']}}">
+                    @if ($listing->image)
+                    <img
+                    class="p-8 rounded-t-lg md:h-80"
+                    src="{{ asset('storage/img/listings/' . $listing->image) }}"
+                    alt="product image"
+                    />
+                        
+                    @else
                     <img
                     class="p-8 rounded-t-lg md:h-80"
                     src="{{ asset('no-image.png') }}"
                     alt="product image"
                     />
+                        
+                    @endif
                 </a>
                 <div class="px-5 pb-5">
                     <!-- Item Name -->
@@ -111,11 +120,22 @@
                     <span class="text-3xl font-bold text-gray-900 dark:text-white"
                         >${{$listing['itemPrice']}}</span
                     >
+                    @if (auth()->check() && auth()->user()->type != 'admin')
+                    <form action="{{ route('listing.cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="itemId" value="{{ $listing->id }}">
+                        <button type="submit"
+                            class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            >Add to cart</button
+                        >
+                    </form>
+                    @else
                     <a
-                        href="{{ auth()->check() ? '' : route('login') }}"
+                        href="{{ route('login') }}"
                         class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >Add to cart</a
                     >
+                    @endif
                     </div>
                 </div>
                 </div>

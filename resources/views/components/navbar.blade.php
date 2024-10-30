@@ -139,7 +139,7 @@
               >
             </li>
             @endif
-            @if (auth()->check())
+            @if (auth()->check() && ((!request()->routeIs('admin.*') && auth()->user()->type != 'admin') || (request()->routeIs('admin.*') && auth()->user()->type == 'admin')))
             <li>
               <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -147,7 +147,7 @@
                   type="submit"
                   class="block py-2 px-3 hover:text-white text-gray-900 bg-gray-600 hover:border-none border-2 border-gray-900 rounded md:bg-transparent md:p-1.5"
                 >
-                  <div class="relative h-12 w-10">
+                  <div class="relative h-12 w-12">
                     <i
                       class="bi bi-person absolute inset-x-0 top-0 text-2xl text-center"
                     ></i>
@@ -177,11 +177,11 @@
               </a>
             </li>
             @endif             
-            @if (!request()->routeIs('admin.*'))
+            @if (auth()->check() && !request()->routeIs('admin.*'))
             <li>
               <div class="relative">
                 <a
-                  href="./cart.html"
+                  href="{{ route('listing.cart.list') }}"
                   class="block py-2 px-3 hover:text-white text-gray-900 bg-gray-600 hover:border-none border-2 border-gray-900 rounded md:bg-transparent md:p-1.5"
                   ><div class="relative h-12 w-10">
                     <i
@@ -197,7 +197,11 @@
                   id="cartAmount"
                   class="cartAmount absolute h-5 w-5 -right-4 -top-3 text-white bg-gray-900 rounded-md text-center"
                 >
-                  0
+                @if (session('carts'))
+                    {{ count(session('carts')) }}
+                @else
+                0
+                @endif
                 </div>
               </div>
             </li>

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Console\View\Components\Warn;
 
 class LoginController extends Controller
 {
@@ -16,8 +18,9 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
-        if (Auth::attempt($credentials)) {
+        $user = User::where('email', $request->get('email'))->first();
+        // dd(url()->previous());
+        if (((!request()->routeIs('admin.*') && $user->type == 'user') || (request()->routeIs('admin.*') && $user->type == 'admin')) && Auth::attempt($credentials)) {
             if(auth()->user()->type == 'admin'){
                 return redirect()->route('admin.home');
             }
@@ -53,8 +56,12 @@ class LoginController extends Controller
     }
 
     public function logout() {
+        $route = 'home';
+        if(auth()->user()->type == 'admin'){
+            $route = 'admin.login.view';
+        }
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route($route);
 
     }
 

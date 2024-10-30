@@ -36,7 +36,7 @@
                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td class="p-4 flex justify-center">
                                     @if ($listing->image)
-                                        <img src="{{ asset('/img/listings' . $listing->image) }}"
+                                        <img src="{{ asset('storage/img/listings/' . $listing->image) }}"
                                             class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch" />
                                     @else
                                         <img src="{{ asset('no-image.png') }}" class="w-16 md:w-32 max-w-full max-h-full"
@@ -63,11 +63,15 @@
                                             type="button">
                                             <strong><i class="bi bi-pen-fill"></i></strong>Edit
                                         </button>
-                                        <button
-                                            class="block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                            type="button">
-                                            <strong><i class="bi bi-trash-fill"></i>Delete
-                                        </button>
+                                        <form action="{{ route('admin.delete.listing') }}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $listing->id }}">
+                                            <button
+                                                class="block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                type="submit">
+                                                <strong><i class="bi bi-trash-fill"></i>Delete
+                                            </button>
+                                        </form>
 
                                     </div>
                                 </td>
@@ -80,6 +84,7 @@
                     @endunless
                 </tbody>
             </table>
+            {{ $listings->links() }}
         </div>
     </div>
 
@@ -107,7 +112,7 @@
                 </div>
                 <!-- Modal body -->
                 @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
+                    <div class="text-center p-2 text-rose-500">{{ $error }}</div>
                 @endforeach
                 <form class="p-4 md:p-5" id="form" enctype="multipart/form-data">
                     @csrf
@@ -198,6 +203,8 @@
         @endif
         <script>
             function onEdit(data) {
+                document.getElementById('form').action = '{{ route('admin.update.listing') }}';
+                document.getElementById('form').method = 'POST';
                 document.getElementById('id').value = data?.id;
                 document.getElementById('modal-title').innerHTML = 'Edit Product';
                 document.getElementById('name').value = data?.itemName;

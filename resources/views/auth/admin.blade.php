@@ -13,7 +13,7 @@
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
               Sign as Admin
             </h2>
-            <form action="{{ route('login.admin') }}" method="POST" class="mt-8 space-y-6">
+            <form action="{{ route('admin.login') }}" method="POST" class="mt-8 space-y-6">
             @csrf
               <div>
                 <label
