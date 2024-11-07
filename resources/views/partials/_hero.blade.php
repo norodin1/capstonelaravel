@@ -5,7 +5,7 @@
     >
       <h2 class="text-center">Explore New Styles!</h2>
     </div>
-    <div class="container mx-auto md:h-screen md:max-w-none md:w-11/12">
+    <div class="container mx-auto md:h-screen md:max-w-none md:w-11/12 bg-gray-200 rounded">
       <div
         id="default-carousel"
         class="relative w-full md:h-4/5"
@@ -16,7 +16,7 @@
           <!-- Item 1 -->
           <div class="hidden duration-1000 ease-in-out" data-carousel-item>
             <img
-              src={{ asset('images/clothing-pants-charlie-men-s-wear-suit-fashion-png-favpng-uzv5zKTJPY5SqmcctRgY8ZYEe.jpg') }}
+              src={{ asset('images/landing1.png') }}
               class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt="..."
             />
@@ -24,7 +24,7 @@
           <!-- Item 2 -->
           <div class="hidden duration-1000 ease-in-out" data-carousel-item>
             <img
-              src={{ asset('images/7673.png_1200.png') }}
+              src={{ asset('images/landing2.png') }}
               class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt="..."
             />
@@ -32,7 +32,7 @@
           <!-- Item 3 -->
           <div class="hidden duration-1000 ease-in-out" data-carousel-item>
             <img
-              src={{ asset('images/lovepik-fashion-business-men-smile-image-action-png-image_401182282_wh1200.png') }}
+              src={{ asset('images/landing3.png') }}
               class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt="..."
             />

@@ -1,12 +1,13 @@
 <x-layout>
 
     <div
-        class="container mx-auto mt-2 md:h-12 md:max-w-none md:w-full border-2 items-center flex justify-center rounded-sm bg-gray-600 text-gray-50"
+        class="container m-2 mt-2 md:h-12 md:max-w-none md:w-full border-2 items-center flex justify-center rounded-sm bg-gray-600 text-gray-50"
       >
         <h2 class="text-center">Your Cart List!</h2>
       </div>
+      @unless(count($carts)==0)
 
-      <div class="container mx-auto mt-4 md:h-auto md:max-w-none md:w-9/12">
+      <div class="container mx-auto mt-4 md:min-h-96 md:max-w-none md:w-9/12">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table
             class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -25,6 +26,7 @@
               </tr>
             </thead>
             <tbody>
+              
               @foreach ($carts as $key => $cart)
               {{-- {{ dd($cart->itemDetails) }} --}}
               <tr
@@ -133,29 +135,34 @@
             </tbody>
           </table>
         </div>
-
-        <div class="relative overflow-x-auto">
-          <table
-            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-          >
-            <thead
-              class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
-            >
-            <tfoot>
-              <tr class="font-semibold text-gray-900 dark:text-white">
-                <th scope="row" class="px-6 py-3 text-base text-center">
-                  Total
-                </th>
-                <td class="px-6 py-3"></td>
-                <td class="px-6 py-3 text-2xl text-center" id="total">${{ $total }}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
       </div>
+      <div class="relative overflow-x-auto  flex justify-center m-2 md:m-auto">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400  md:w-9/12"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
+          >
+          <tfoot>
+            <tr class="font-semibold text-gray-900 bg-gray-50 dark:text-white">
+              <td class="px-6 py-3"></td>
+              <th scope="row" class="px-6 py-3 text-base text-center">
+                Total
+              </th>
+              <td class="px-6 py-3 text-2xl text-center" id="total">$ {{ $total }}</td>
+            </tr>
+          </tfoot>
+        </table>
+        
+      </div>
+      @else
+            <div class="container mx-auto my-16 min-h-60 md:min-h-96 md:max-w-none md:w-9/12 items-center flex justify-center shadow-md sm:rounded-lg">
+              <p class="text-2xl font-semibold">Cart is Empty</p>
+            </div>
+          @endunless
 
       <div
-        class="container mx-auto md:h-12 md:max-w-none md:w-9/12 items-center flex justify-center shadow-md sm:rounded-lg"
+        class="container m-2 md:mx-auto md:h-12 md:max-w-none md:w-9/12 items-center flex justify-center shadow-md sm:rounded-lg py-12"
       >
         <div class="flex space-x-8">
           <a
@@ -179,6 +186,20 @@
             echo '<script> const carts ='.json_encode($carts).'; </script>';
         @endphp
         <script>
+            function saveQty(qty, data){
+                const form = new FormData()
+                form.append('_token', '{{ csrf_token() }}');
+                form.append('id', data?.id);
+                form.append('qty', qty);
+                fetch('{{ route('listing.cart.change') }}', {
+                  method: 'POST',
+                  header: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: form
+                }).then((response) => response.json())
+                .then((json) => console.log(json));
+            }
             function onChange(event, data) {
                 const qty = event.target.value;
                 let total = 0;
@@ -189,15 +210,7 @@
                   }
                 }
                 document.getElementById('total').innerHTML = '$'+total;
-                fetch('{{ route('listing.cart.change') }}', {
-                  Method: 'POST',
-                  Headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                  },
-                  data: ['waw']
-                }).then((response) => response.json())
-                .then((json) => console.log(json));
+                saveQty(qty, data)
             }
             function onAdd(key, data) {
                 const qty =  Number(document.getElementById('qty'+key).value) + 1;
@@ -210,6 +223,7 @@
                   }
                 }
                 document.getElementById('total').innerHTML = '$'+total;
+                saveQty(qty, data)
                 console.warn(data);
             }
             function onDec(key, data) {
@@ -224,6 +238,7 @@
                   }
                 }
                 document.getElementById('total').innerHTML = '$'+total;
+                saveQty(qty, data)
                   console.warn(data);
                 }
             }

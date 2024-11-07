@@ -182,7 +182,7 @@ class ListingController extends Controller
 
     public function addCart ()
     {
-        $cart = Cart::where('itemId', request()->get('itemId'))->first();
+        $cart = Cart::where('itemId', request()->get('itemId'))->where('userId', auth()->user()->id)->where('paid', 0)->first();
         if ($cart) {
             # code...
             $cart->update([
@@ -195,10 +195,11 @@ class ListingController extends Controller
                 'qty' => 1,
             ]);
         }
-        return back();
+        $this->getCart();
+        return redirect()->route('listing.cart.list');
     }
     public function cartList ()
-    {   $cart = Cart::where('userId', auth()->user()->id)->get();
+    {   $cart = Cart::where('userId', auth()->user()->id)->where('paid', 0)->get();
         $total = 0;
         foreach ($cart as $key => $value) {
             $total += $value->qty * $value->itemDetails->itemPrice;
@@ -210,7 +211,7 @@ class ListingController extends Controller
     }
     private function getCart(){
         if(auth()->check() && auth()->user()->type != 'admin'){
-            $cart = Cart::where('userId', auth()->user()->id)->get();
+            $cart = Cart::where('userId', auth()->user()->id)->where('paid', 0)->get();
             session(['carts'=> $cart]);
         }
     }
@@ -223,18 +224,33 @@ class ListingController extends Controller
     }
     public function changeQty ()
     { 
-        dd(request()->all());
-        return redirect()->back();
+        $cart = Cart::find(request()->get('id'))->update([
+            'qty' => request()->get('qty')
+        ]);
+        return response(['message' => 'success', 'data' => request()->all()], 200);
     }
 
-    public function checkout () {
-        return view('listings.checkout');
+    public function checkout () 
+    { $cart = Cart::where('userId', auth()->user()->id)->get();
+        $total = 0;
+        foreach ($cart as $key => $value) {
+            $total += $value->qty * $value->itemDetails->itemPrice;
+        }
+        return view('listings.checkout', [
+            'carts' => $cart,
+            'total' => $total
+        ]);
     }
     public function complete () {
         return view('listings.transComplete');
     }
 
     public function completeCart () {
+        Cart::where('userId', auth()->user()->id)->where('paid', 0)->update([
+            'reference' => request()->get('reference'),
+            'paid' => 1
+        ]);
+        $this->getCart();
         return redirect()->route('listing.cart.complete');
     }
 

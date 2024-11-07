@@ -1,4 +1,19 @@
 <x-layout>
+  @php
+        
+        if(!function_exists("makeQuery")) {
+          function makeQuery($cat){
+              $array = [];
+              if (request()->get('keyword')) {
+                  $array['keyword'] = request()->get('keyword');
+              }
+              if (request()->get('category') != $cat) {
+                  $array['category'] = $cat;
+              }
+              return $array;
+          }
+        }
+    @endphp
     <div
         class="container mx-auto md:h-12 md:max-w-none md:w-full items-center flex justify-center bg-gray-50 text-gray-900"
       >
@@ -10,15 +25,26 @@
       >
         <div class="md:grid md:grid-cols-2">
           <div class="flex justify-center">
-            <img
-              src="{{ asset('no-image.png') }}"
-              alt=""
-            />
+            @if ($listing->image)
+                    <img
+                    class="p-8 rounded-t-lg md:h-80"
+                    src="{{ asset('storage/img/listings/' . $listing->image) }}"
+                    alt="product image"
+                    />
+                        
+                    @else
+                    <img
+                    class="p-8 rounded-t-lg md:h-80"
+                    src="{{ asset('no-image.png') }}"
+                    alt="product image"
+                    />
+                        
+                    @endif
           </div>
           <!-- Product details -->
           <div class="mx-2">
             <h1 class="my-6 font-black text-2xl">{{$listing['itemName']}}</h1>
-            <p class="my-6 font-semibold text-xl">{{$listing['itemPrice']}}</p>
+            <p class="my-6 font-semibold text-xl">$ {{$listing['itemPrice']}}</p>
             <div class="flex items-center justify-between mt-2.5 mb-5">
               <div class="flex items-center">
                 <div class="flex items-center space-x-1 rtl:space-x-reverse">
@@ -85,7 +111,7 @@
               </div>
             </div>
             <!-- Item Category -->
-            <a href="#"
+            <a href="{{route('search', makeQuery($listing['category']))}}"
               ><span
                 class="text-end text-white bg-gray-700 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 p-1 rounded-md"
                 >{{$listing['category']}}</span
@@ -96,11 +122,22 @@
                 {{$listing['description']}}
             </p>
             <div class="my-6">
-              <a
-                href="./login.html"
-                class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >Add to cart</a
-              >
+              @if (auth()->check() && auth()->user()->type != 'admin')
+                    <form action="{{ route('listing.cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="itemId" value="{{ $listing->id }}">
+                        <button type="submit"
+                            class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            >Add to cart</button
+                        >
+                    </form>
+                    @else
+                    <a
+                        href="{{ route('login') }}"
+                        class="text-white bg-gray-700 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >Add to cart</a
+                    >
+                    @endif
             </div>
           </div>
         </div>

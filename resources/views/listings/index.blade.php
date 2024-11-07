@@ -1,4 +1,19 @@
 <x-layout> 
+    @php
+        
+        if(!function_exists("makeQuery")) {
+          function makeQuery($cat){
+              $array = [];
+              if (request()->get('keyword')) {
+                  $array['keyword'] = request()->get('keyword');
+              }
+              if (request()->get('category') != $cat) {
+                  $array['category'] = $cat;
+              }
+              return $array;
+          }
+        }
+    @endphp
     @include('partials._hero')
     <div
         class="container mx-auto mt-4 md:h-12 md:max-w-none md:w-full border-2 items-center flex justify-center rounded-sm bg-gray-600 text-gray-50"
@@ -108,7 +123,7 @@
                         >
                     </div>
                     <!-- Item Category -->
-                    <a href="#"
+                    <a href="{{route('search', makeQuery($listing['category']))}}"
                         ><span
                         class="text-end text-white bg-gray-700 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 p-1 rounded-md"
                         >{{$listing['category']}}</span

@@ -124,7 +124,7 @@
                           >
                       </div>
                       <!-- Item Category -->
-                      <a href="#"
+                      <a href="{{route('search', makeQuery($listing['category']))}}"
                           ><span
                           class="text-end text-white bg-gray-700 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 p-1 rounded-md"
                           >{{$listing['category']}}</span

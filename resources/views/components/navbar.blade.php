@@ -7,7 +7,7 @@
         class="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto p-3 w-10/12 md:w-auto"
       >
         <a
-          href="https://flowbite.com/"
+          href="/"
           class="flex items-center space-x-3 rtl:space-x-reverse order-first mb-2 md:mb-0"
         >
           <img
@@ -177,7 +177,7 @@
               </a>
             </li>
             @endif             
-            @if (auth()->check() && !request()->routeIs('admin.*'))
+            @if (auth()->check() && auth()->user()->type != 'admin' && !request()->routeIs('admin.*'))
             <li>
               <div class="relative">
                 <a

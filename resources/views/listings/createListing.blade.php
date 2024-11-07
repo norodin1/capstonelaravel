@@ -78,8 +78,8 @@
                             </tr>
                         @endforeach
                     @else
-                        <tr>
-                            <td colspan="6">No Listings Found</td>
+                        <tr class="md:h-lvh">
+                            <td colspan="12" class="text-center text-3xl">No Listings Found</td>
                         </tr>
                     @endunless
                 </tbody>
